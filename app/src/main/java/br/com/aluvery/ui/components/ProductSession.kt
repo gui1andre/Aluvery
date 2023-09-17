@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.aluvery.model.Product
 import br.com.aluvery.ui.sampledata.sampleProducts
+import br.com.aluvery.ui.theme.AluveryTheme
 
 @Composable
 fun ProductsSection(title: String, products: List<Product>) {
@@ -47,7 +49,11 @@ fun ProductsSection(title: String, products: List<Product>) {
 @Preview(showBackground = true)
 @Composable
 private fun ProductsSectionPreview() {
-    ProductsSection("Promoções", sampleProducts)
+    AluveryTheme {
+        Surface {
+            ProductsSection("Promoções", products = sampleProducts)
+        }
+    }
 }
 
 

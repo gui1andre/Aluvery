@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,8 +26,6 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.aluvery.R
-import br.com.aluvery.ui.theme.Purple500
-import br.com.aluvery.ui.theme.Teal200
 
 @Composable
 fun KitsProducts() {
@@ -45,19 +44,20 @@ fun KitsProducts() {
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                Purple500, Teal200
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.secondary
                             )
                         )
                     )
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = "Descrição do produto",
                     Modifier
                         .offset(x = 50.dp, y = (-50).dp)
                         .size(100.dp)
                         .border(
-                            BorderStroke(2.dp, Purple500), CircleShape
+                            BorderStroke(2.dp, MaterialTheme.colorScheme.primary), CircleShape
                         )
                         .clip(shape = CircleShape)
                         .align(Alignment.BottomCenter)
