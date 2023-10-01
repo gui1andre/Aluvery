@@ -20,8 +20,12 @@ import br.com.aluvery.ui.sampledata.sampleProducts
 import br.com.aluvery.ui.theme.AluveryTheme
 
 @Composable
-fun ProductsSection(title: String, products: List<Product>) {
-    Column {
+fun ProductsSection(
+    title: String,
+    products: List<Product>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier) {
         Text(
             text = title,
             Modifier.padding(start = 16.dp, end = 16.dp),

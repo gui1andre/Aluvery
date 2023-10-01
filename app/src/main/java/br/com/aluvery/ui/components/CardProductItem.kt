@@ -16,23 +16,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.aluvery.R
 import br.com.aluvery.extensions.toBrazilianCurrency
 import br.com.aluvery.model.Product
-import br.com.aluvery.ui.sampledata.sampleProducts
 import br.com.aluvery.ui.theme.AluveryTheme
 import coil.compose.AsyncImage
+import java.math.BigDecimal
 
 
 @Composable
 fun CardProductItem(
     product: Product,
+    modifier: Modifier = Modifier,
     elevation: Dp = 4.dp
 ) {
     Card(
-        Modifier
+        modifier
             .fillMaxWidth()
             .heightIn(150.dp),
         elevation = CardDefaults.cardElevation(
@@ -62,12 +64,14 @@ fun CardProductItem(
                     text = product.price.toBrazilianCurrency()
                 )
             }
-            // TODO: adicionar descrição do produto
-            // Text(
-            //     text = product.description,
-            //     Modifier
-            //         .padding(16.dp)
-            // )
+            product.description?.let {
+                Text(
+                    text = it,
+                    Modifier
+                        .padding(16.dp)
+                )
+            }
+
         }
     }
 }
@@ -78,7 +82,25 @@ private fun CardProductItemPreview() {
     AluveryTheme {
         Surface {
             CardProductItem(
-                product = sampleProducts.random(),
+                product = Product(
+                    name = "teste",
+                    price = BigDecimal("9.99")
+                ),
+            )
+        }
+    }
+}
+@Preview
+@Composable
+private fun CardProductItemPreviewWithDescription() {
+    AluveryTheme {
+        Surface {
+            CardProductItem(
+                product = Product(
+                    name = "teste",
+                    price = BigDecimal("9.99"),
+                    description = LoremIpsum(50).values.first()
+                ),
             )
         }
     }
