@@ -3,7 +3,6 @@
 package br.com.aluvery.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,7 +53,12 @@ class ProductFormActivity : ComponentActivity() {
         setContent {
             AluveryTheme {
                 Surface {
-                    ProductFormScreen()
+                    ProductFormScreen(
+                        onSaveClick = {
+                            dao.save(it)
+                            finish()
+                        }
+                    )
                 }
             }
         }
@@ -64,7 +68,7 @@ class ProductFormActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductFormScreen() {
+fun ProductFormScreen(onSaveClick: (Product) -> Unit = {}) {
     var url by remember {
         mutableStateOf("")
     }
@@ -173,12 +177,7 @@ fun ProductFormScreen() {
                     price = convertedPrice,
                     description = description,
                 )
-
-                Log.i(
-                    "productFormActivity",
-                    "ProductFormScreen: $product"
-                )
-
+                onSaveClick(product)
             },
             Modifier.fillMaxWidth(),
         ) {

@@ -1,9 +1,7 @@
 package br.com.aluvery.ui.activities
 
-import HomeScreen
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -18,10 +16,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import br.com.alura.aluvery.ui.screens.HomeScreen
 import br.com.aluvery.dao.ProductDao
-import br.com.aluvery.ui.sampledata.sampleCandies
-import br.com.aluvery.ui.sampledata.sampleDrinks
-import br.com.aluvery.ui.sampledata.sampleSections
 import br.com.aluvery.ui.theme.AluveryTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,14 +28,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             App(onFabClick = {
                 startActivity(Intent(this, ProductFormActivity::class.java))
-            }){
-                val sections = mapOf(
-                    "Todos produtos" to dao.products(),
-                    "Promoções" to sampleDrinks + sampleCandies,
-                    "Doces" to sampleCandies,
-                    "Bebidas" to sampleDrinks
-                )
-                HomeScreen(sections = sections)
+            }) {
+                val products = dao.products()
+                HomeScreen(products = products)
             }
         }
     }

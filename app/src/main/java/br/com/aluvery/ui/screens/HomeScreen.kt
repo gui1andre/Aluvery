@@ -1,7 +1,10 @@
+package br.com.alura.aluvery.ui.screens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,74 +21,134 @@ import br.com.aluvery.model.Product
 import br.com.aluvery.ui.components.CardProductItem
 import br.com.aluvery.ui.components.ProductsSection
 import br.com.aluvery.ui.components.SearchTextField
+import br.com.aluvery.ui.sampledata.sampleCandies
+import br.com.aluvery.ui.sampledata.sampleDrinks
 import br.com.aluvery.ui.sampledata.sampleProducts
 import br.com.aluvery.ui.sampledata.sampleSections
 import br.com.aluvery.ui.theme.AluveryTheme
 
 
-@Composable
-fun HomeScreen(
-    sections: Map<String, List<Product>>, searchText: String = ""
+class HomeScreenUiState(
+    val sections: Map<String, List<Product>> = emptyMap(),
+    val searchText: String = "",
+    val searchedProducts: List<Product> = emptyList(),
+    val onSearchChange: (String) -> Unit = {}
 ) {
-    var text by remember {
-        mutableStateOf(searchText)
+
+
+
+
+    fun isShowSections(): Boolean {
+        return searchText.isBlank()
     }
-    var searchedProducts = remember(text) {
+
+
+
+}
+
+@Composable
+fun HomeScreen(products: List<Product>) {
+    val sections = mapOf(
+        "Todos produtos" to products,
+        "Promoções" to sampleDrinks + sampleCandies,
+        "Doces" to sampleCandies,
+        "Bebidas" to sampleDrinks
+    )
+    var text by remember {
+        mutableStateOf("")
+    }
+
+    fun containsInNameOrDescription() = { product: Product ->
+        product.name.contains(
+            text,
+            ignoreCase = true,
+        ) || product.description?.contains(
+            text,
+            ignoreCase = true,
+        ) ?: false
+    }
+
+    val searchedProducts = remember(text, products) {
+
         if (text.isNotBlank()) {
-            sampleProducts.filter {
-                it.name.contains(text, ignoreCase = true) || it.description?.contains(
-                    searchText,
-                    ignoreCase = true
-                ) ?: false
-            }
+            sampleProducts.filter(containsInNameOrDescription()) + products.filter(
+                containsInNameOrDescription()
+            )
         } else emptyList()
     }
+
+    val state = remember(products, text) {
+        HomeScreenUiState(sections = sections,
+            searchedProducts = searchedProducts,
+            searchText = text,
+            onSearchChange = {
+                text = it
+            })
+    }
+    HomeScreen(state = state)
+}
+
+@Composable
+fun HomeScreen(
+    state: HomeScreenUiState = HomeScreenUiState()
+) {
     Column {
-        SearchTextField(searchText = searchText, onSearchChange = {
-            text = it
-        })
+        val sections = state.sections
+        val text = state.searchText
+        val searchedProducts = state.searchedProducts
+        SearchTextField(
+            searchText = text,
+            onSearchChange = state.onSearchChange,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+        )
+
         LazyColumn(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            if (text.isBlank()) {
-                item {
-                    for (section in sections) {
-                        ProductsSection(title = section.key, products = section.value)
+            if (state.isShowSections()) {
+                for (section in sections) {
+                    val title = section.key
+                    val products = section.value
+                    item {
+                        ProductsSection(
+                            title = title, products = products
+                        )
                     }
                 }
             } else {
-                items(searchedProducts) {
+                items(searchedProducts) { p ->
                     CardProductItem(
-                        product = it,
+                        product = p,
                         Modifier.padding(horizontal = 16.dp),
                     )
-
                 }
             }
-
-
         }
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-fun HomeScreenPreview() {
+private fun HomeScreenPreview() {
     AluveryTheme {
         Surface {
-            HomeScreen(sampleSections)
+            HomeScreen(HomeScreenUiState(sections = sampleSections))
         }
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview
 @Composable
-fun HomeScreenSearchtextPreview() {
+fun HomeScreenWithSearchTextPreview() {
     AluveryTheme {
         Surface {
-            HomeScreen(sampleSections, searchText = "ham")
+            HomeScreen(
+                state = HomeScreenUiState(searchText = "a", sections = sampleSections),
+            )
         }
     }
 }
